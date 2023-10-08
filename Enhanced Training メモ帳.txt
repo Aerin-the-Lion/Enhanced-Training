@@ -1,0 +1,9 @@
+[HarmonyPostfix, HarmonyPatch(typeof(Menu_Training_Select), "Init")]
+static void InjectEH_After_Menu_Training_Select(Menu_Training_Select __instance)
+にて、Initに必要なメソッドを置いておき、よそに作ったメソッドから諸々作るようにする。直書きNGにした方が書きやすいかと。
+
+GameObject Content = GameObject.Find("CanvasInGameMenu/Menu_Training_Select/WindowMain/Scroll View /Viewport/Content");
+GameObject Training_Kurs_GD1 = Content.transform.Find("Training_Kurs_GD1").gameObject;
+GameObject Training_Kurs_Test999 = CloneUIObject(Training_Kurs_GD1, Content, "Training_Kurs_Test999");
+これで、オブジェクト=メニューを複製する。
+.GetComponent<Item_Training_Kurs>().myIDに、ユニークなIDを入れて、Item_Training_Kurs.SetDataでMenu_Training_Select.trainingCosts[i]などの情報を受け、クローンに情報を入れるようだ。

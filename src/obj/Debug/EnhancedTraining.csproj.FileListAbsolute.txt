@@ -1,0 +1,14 @@
+C:\Users\Aerin\OneDrive\ドキュメント\C#_Tool\EnhancedTraining\src\bin\Debug\EnhancedTraining.dll
+C:\Users\Aerin\OneDrive\ドキュメント\C#_Tool\EnhancedTraining\src\bin\Debug\EnhancedTraining.pdb
+C:\Users\Aerin\OneDrive\ドキュメント\C#_Tool\EnhancedTraining\src\obj\Debug\EnhancedTraining.csproj.AssemblyReference.cache
+C:\Users\Aerin\OneDrive\ドキュメント\C#_Tool\EnhancedTraining\src\obj\Debug\EnhancedTraining.csproj.CoreCompileInputs.cache
+C:\Users\Aerin\OneDrive\ドキュメント\C#_Tool\EnhancedTraining\src\obj\Debug\EnhancedTraining.dll
+C:\Users\Aerin\OneDrive\ドキュメント\C#_Tool\EnhancedTraining\src\obj\Debug\EnhancedTraining.pdb
+C:\Users\Aerin\OneDrive\ドキュメント\C#_Tool\EnhancedTraining\src\obj\Debug\EnhancedTraining.csproj.CopyComplete
+C:\Program Files (x86)\Steam\steamapps\common\Mad Games Tycoon 2\BepInEx\plugins\EnhancedTraining.dll
+C:\Program Files (x86)\Steam\steamapps\common\Mad Games Tycoon 2\BepInEx\plugins\EnhancedTraining.pdb
+C:\Users\admin\Documents\C#_Tool\EnhancedTraining\src\obj\Debug\EnhancedTraining.csproj.AssemblyReference.cache
+C:\Users\admin\Documents\C#_Tool\EnhancedTraining\src\obj\Debug\EnhancedTraining.csproj.CoreCompileInputs.cache
+C:\Users\admin\Documents\C#_Tool\EnhancedTraining\src\obj\Debug\EnhancedTraining.csproj.CopyComplete
+C:\Users\admin\Documents\C#_Tool\EnhancedTraining\src\obj\Debug\EnhancedTraining.dll
+C:\Users\admin\Documents\C#_Tool\EnhancedTraining\src\obj\Debug\EnhancedTraining.pdb
