@@ -28,38 +28,20 @@ namespace EnhancedTraining
         public static int originalLastMyID;
         public static TrainingUIObject testMenuObject;
         public static TrainingUIObject testMenuObject2;
-
-        static void mTS_Init(savegameScript __instance)
+        public static bool isDo = false;
+        
+        static void Init_mTS_(savegameScript __instance)
         {
             mTS_ = Traverse.Create(__instance).Field<GUI_Main>("guiMain_").Value.uiObjects[92].GetComponent<Menu_Training_Select>();
         }
-        
-        [HarmonyPostfix, HarmonyPatch(typeof(savegameScript), "LoadTasks")]
+
+        [HarmonyPrefix, HarmonyPatch(typeof(savegameScript), "LoadTasks")]
         static void Init(savegameScript __instance)
         {
-            Debug.Log("mts取得");
-            mTS_Init(__instance);
-            //GUI_Main guiMain_ = Traverse.Create(__instance).Field<GUI_Main>("guiMain_").Value;
-            //Menu_Training_Select mtS_ = guiMain_.uiObjects[92].GetComponent<Menu_Training_Select>();
+            Init_mTS_(__instance);
+            originalLastMyID = mTS_.trainingCosts.Length - 1;
             if (mTS_.trainingCosts.Length > 24) { return; }
-            Debug.Log("mtS_.trainingCosts.Length " + mTS_.trainingCosts.Length);
-            Debug.Log("testMenuObject開始");
-            testMenuObject = new TrainingUIObject("Test999", "Hogeee for Veterans", 5, 999999, 499f, 6, 1000f, 9999);
-            Debug.Log("終了");
-            Debug.Log("SetUIObject開始");
-            testMenuObject.SetUIObject();
-            Debug.Log("終了");
-            testMenuObject2 = new TrainingUIObject("Test9991", "Hogeee for Veterans2", 2, 999999, 80f, 4, 1000f, testMenuObject.SiblingIndex);
-            testMenuObject2.SetUIObject();
-        }
-        
-        //Menu_Training_SelectのInitのあとに、諸々行う。なお、この処理はゲーム起動から行われるため、最も早い。
-        //FindScriptsを実施後のため、支障はないと思われる
-        [HarmonyPostfix, HarmonyPatch(typeof(Menu_Training_Select), "Start")]
-        static void InjectEH_After_Menu_Training_Select_Init(Menu_Training_Select __instance)
-        {
-            if(__instance.trainingCosts.Length > 24) { return; }
-            //Menu_Training_Selectのインスタンスを取得
+            Debug.Log("testMenuObject");
             testMenuObject = new TrainingUIObject("Test999", "Hogeee for Veterans", 5, 999999, 499f, 6, 1000f, 9999);
             testMenuObject.SetUIObject();
             testMenuObject2 = new TrainingUIObject("Test9991", "Hogeee for Veterans2", 2, 999999, 80f, 4, 1000f, testMenuObject.SiblingIndex);
@@ -70,7 +52,7 @@ namespace EnhancedTraining
         /// Trainingのコース選択画面のUIObjectを一つずつ設定するために存在するメソッド
         /// この情報をもとに、taskTrainingがStartされ、RoomのUIに情報が行く。
         /// 裏を返せば、ゲーム起動時では、taskTrainingを介さないため、何らかの方法でRoomのUIに情報を行かせる必要がある……
-        /// そうしないと、TextNameに"N"という謎の文字列が入ったままになる。あ
+        /// そうしないと、TextNameに"N"という謎の文字列が入ったままになる。
         /// </summary>
         /// <param name="__instance"></param>
         [HarmonyPostfix, HarmonyPatch(typeof(Item_Training_Kurs), "SetData")]
@@ -78,19 +60,33 @@ namespace EnhancedTraining
         {
             if (__instance.myID > originalLastMyID)
             {
-                Menu_Training_Select menuTraining_ = Traverse.Create(__instance).Field<Menu_Training_Select>("menuTraining_").Value;
+                //Menu_Training_Select menuTraining_ = Traverse.Create(__instance).Field<Menu_Training_Select>("menuTraining_").Value;
 
-                if (testMenuObject.MyID == __instance.myID)
+                
+                //if (testMenuObject.MyID == __instance.myID)
+                //{
+                    //__instance.uiObjects[0]. GetComponent<UnityEngine.UI.Text>().text = testMenuObject.TextName;
+                //}
+                //if (testMenuObject2.MyID == __instance.myID)
+                //{
+                    //__instance.uiObjects[0].GetComponent<UnityEngine.UI.Text>().text = testMenuObject2.TextName;
+                //}
+
+                //TrainingUIObjectのリストを回して、TextNameを設定する
+                foreach (TrainingUIObject foundObject in TrainingUIObject.instanceList)
                 {
-                    __instance.uiObjects[0].GetComponent<UnityEngine.UI.Text>().text = testMenuObject.TextName;
+                    if (foundObject.MyID == __instance.myID)
+                    {
+                        __instance.uiObjects[0].GetComponent<UnityEngine.UI.Text>().text = foundObject.TextName;
+                    }
+                    else
+                    {
+                    }
                 }
-                if (testMenuObject2.MyID == __instance.myID)
-                {
-                    __instance.uiObjects[0].GetComponent<UnityEngine.UI.Text>().text = testMenuObject2.TextName;
-                }
+                
 
                 string textEffect;
-                switch (menuTraining_.trainingEffekt[__instance.myID])
+                switch (mTS_.trainingEffekt[__instance.myID])
                 {
                     case 0:
                         textEffect = "Effectiveness: <color=blue>Low</color>";
@@ -126,20 +122,59 @@ namespace EnhancedTraining
             }
         }
 
-        //HarmonyPostfix, roomScript, UpdateWindowTraining
+        private static taskTraining taskTraining_;
+        private static roomButtonScript rbS_;
+        private static GUI_Main guiMain_;
+        private static textScript tS_;
+        /// <summary>
+        /// RoomのUIに情報を行かせるために存在するメソッド、Updateのため1フレームごとに呼び出される
+        /// Update関数のためか、Transpilerでうまくいかないため、Postfixで対応する
+        /// セーブ・ロードした際に、追加UIの情報が行かないため、追加の処理を入れる。
+        /// </summary>
+        /// <param name="__instance"></param>
         [HarmonyPostfix, HarmonyPatch(typeof(roomScript), "UpdateWindowTraining")]
         static void CustomUpdateWindowTraining(roomScript __instance)
         {
             if (__instance.taskGameObject)
             {
-                taskTraining taskTraining = __instance.GetTaskTraining();
-                GUI_Main guiMain_ = Traverse.Create(__instance).Field<GUI_Main>("guiMain_").Value;
-                Debug.Log("taskTraining.myID" + taskTraining.slot);
-                roomButtonScript rbS_ = Traverse.Create(__instance).Field<roomButtonScript>("rbS_").Value;
-                string text = guiMain_.uiObjects[92].GetComponent<Menu_Training_Select>().uiObjects[0].transform.GetChild(taskTraining.slot).Find("TextName").GetComponent<Text>().text;
-                rbS_.uiWindows[5].GetComponent<roomWindow>().uiObjects[0].GetComponent<Text>().text = text; 
+                if(taskTraining_ == null) { taskTraining_ = __instance.GetTaskTraining(); }
+                if(guiMain_ == null) { guiMain_ = Traverse.Create(__instance).Field<GUI_Main>("guiMain_").Value; }
+                if(rbS_ == null) { rbS_ = Traverse.Create(__instance).Field<roomButtonScript>("rbS_").Value; }
+                if(tS_ == null) { tS_ = Traverse.Create(__instance).Field<textScript>("tS_").Value; }
+                Transform mTS_Transform = guiMain_.uiObjects[92].GetComponent<Menu_Training_Select>().uiObjects[0].transform;
+
+                //mTS_Transformをforeachして、slotと同じIDのものを探す
+                string text = "";
+                int slot = taskTraining_.slot;
+                foreach (Transform child in mTS_Transform)
+                {
+                    if(child.gameObject.GetComponent<Item_Training_Kurs>() == null) { continue; }
+                    if (child.gameObject.GetComponent<Item_Training_Kurs>().myID == slot)
+                    {
+                        if(slot > originalLastMyID)
+                        {
+                            foreach (TrainingUIObject foundObject in TrainingUIObject.instanceList) //インスタンス化されたTrainingUIObjectのリストを回す
+                            {
+                                if (foundObject.MyID == slot)
+                                {
+                                    text = foundObject.TextName;
+                                }
+                                else
+                                {
+                                }
+                            }
+                        }
+                        else
+                        {
+                            text = tS_.GetText(538 + slot); //オリジナルのUIオブジェクト用
+                        }
+                    }
+                }
+                rbS_.uiWindows[5].GetComponent<roomWindow>().uiObjects[0].GetComponent<Text>().text = text;
+                //Debug.Log("text " + text);
             }
         }
+
     }
 
     //CloneUIObject後のUIObjectの設定を行う
@@ -202,29 +237,32 @@ namespace EnhancedTraining
         public Sprite Sprite { get; set; }
         public GameObject SkillUI { get; set; }
 
-        private GameObject content;
-        private GameObject gameDesignOriginalUI;
-        private GameObject programmingOriginalUI;
-        private GameObject graphicDesignOriginalUI;
-        private GameObject musicSoundOriginalUI;
-        private GameObject marketingSupportOriginalUI;
-        private GameObject gameTestingOriginalUI;
-        private GameObject hardwareEngineeringOriginalUI;
-        private GameObject researchOriginalUI;
+        private static GameObject content;
+        private static GameObject gameDesignOriginalUI;
+        private static GameObject programmingOriginalUI;
+        private static GameObject graphicDesignOriginalUI;
+        private static GameObject musicSoundOriginalUI;
+        private static GameObject marketingSupportOriginalUI;
+        private static GameObject gameTestingOriginalUI;
+        private static GameObject hardwareEngineeringOriginalUI;
+        private static GameObject researchOriginalUI;
 
-        private Sprite[] originalSprites;
-        private Sprite gameDesignOriginalSprite;
-        private Sprite programmingOriginalSprite;
-        private Sprite graphicDesignOriginalSprite;
-        private Sprite musicSoundOriginalSprite;
-        private Sprite marketingSupportOriginalSprite;
-        private Sprite gameTestingOriginalSprite;
-        private Sprite hardwareEngineeringOriginalSprite;
-        private Sprite researchOriginalSprite;
+        private static Sprite[] originalSprites;
+        private static Sprite gameDesignOriginalSprite;
+        private static Sprite programmingOriginalSprite;
+        private static Sprite graphicDesignOriginalSprite;
+        private static Sprite musicSoundOriginalSprite;
+        private static Sprite marketingSupportOriginalSprite;
+        private static Sprite gameTestingOriginalSprite;
+        private static Sprite hardwareEngineeringOriginalSprite;
+        private static Sprite researchOriginalSprite;
 
         private int originalLastMyID;
 
-        static Menu_Training_Select mTS_;
+        private static Menu_Training_Select mTS_;
+
+        private static bool isInit = false;
+        public static List<TrainingUIObject> instanceList = new List<TrainingUIObject>();
 
         /// <summary>
         /// コンストラクタ
@@ -263,20 +301,21 @@ namespace EnhancedTraining
             SiblingIndex = 0;
             SetSkillInfo(0);
         }
-        public void Init()
+        public static void Init()
         {
-            //Debug.Log("Init.guiMain_.Find");
-            //GUI_Main guiMain_ = Traverse.Create(typeof(mainScript)).Field<GUI_Main>("guiMain_").Value;
-            Debug.Log("Init.mTS_");
-            mTS_ = CustomTrainingMod.mTS_;
-            //mTS_ = guiMain_.uiObjects[92].GetComponent<Menu_Training_Select>();
-            //mTS_ = GameObject.Find("CanvasInGameMenu/Menu_Training_Select").GetComponent<Menu_Training_Select>();
-            Debug.Log("Init.GetOriginalUIObject");
-            GetOriginalUIObject();
-            Debug.Log("Init.GetOriginalUISprites");
-            GetOriginalUISprites();
+            //if (!isInit)
+            //{
+                Debug.Log("Init.mTS_");
+                mTS_ = CustomTrainingMod.mTS_;
+                Debug.Log("Init.GetOriginalUIObject");
+                GetOriginalUIObject();
+                Debug.Log("Init.GetOriginalUISprites");
+                GetOriginalUISprites();
+                //isInit = true;
+            //}
         }
-        public void GetOriginalUIObject()
+
+        public static void GetOriginalUIObject()
         {
             Debug.Log("GetOriginalUIObject.content");
             Debug.Log("CustomTrainingMod.mTS_.uiObjects.Length " + mTS_.uiObjects.Length);
@@ -294,7 +333,7 @@ namespace EnhancedTraining
             researchOriginalUI = content.transform.Find("Training_Kurs_RE1").gameObject;                //Research
         }
 
-        private void GetOriginalUISprites()
+        private static void GetOriginalUISprites()
         {
             originalSprites = mTS_.trainingSprites;
             //originalSprites = GameObject.Find("CanvasInGameMenu/Menu_Training_Select").GetComponent<Menu_Training_Select>().trainingSprites;
@@ -325,10 +364,11 @@ namespace EnhancedTraining
         /// <returns>The generated UIObject is returned as the return value. If configuration is needed, please assign it to a variable.</returns>
         public GameObject SetUIObject()
         {
-            //ひとまず、Game DesignのUIObjectを複製する
+            //UIObjectを複製する
             GameObject clone = Instantiate(SkillUI);
             clone.transform.SetParent(content.transform, false);
             clone.name = Id;
+            SetTextName(clone);
             //clone.transform.SetSiblingIndex(4);
             if (SiblingIndex != 9999)
             {
@@ -340,9 +380,15 @@ namespace EnhancedTraining
             }
             clone.GetComponent<Item_Training_Kurs>().myID = GetMyID();
             ResizeArray();
+            instanceList.Add(this);
             return clone;
         }
 
+        private void SetTextName(GameObject clone)
+        {
+            clone.transform.Find("TextName").GetComponent<Text>().text = TextName;
+            //mTS_.transform.GetChild(GetMyID()).Find("TextName").GetComponent<Text>().text;
+        }
         //Array.Resizeを行って、配列のスタックを増やす
         /// <summary>
         /// ゲーム内のuiObject[]の配列をリサイズしてスタックを増やし、IDの場所を確保する
@@ -388,7 +434,7 @@ namespace EnhancedTraining
         public void SetSkillInfo(int skillIndex)
         {
             switch (skillIndex)
-            {                 
+            {
                 case 1:
                     Sprite = gameDesignOriginalSprite;
                     SkillUI = gameDesignOriginalUI;
@@ -436,6 +482,17 @@ namespace EnhancedTraining
                     break;
             }
         }
-        
+        /// <summary>
+        /// よくわからなくなったので放置
+        /// </summary>
+        public void FindMyIDs()
+        {
+            TrainingUIObject foundInstance = instanceList.FirstOrDefault(item => item.MyID == MyID);
+
+            if (foundInstance != null)
+            {
+                // インスタンスが見つかった場合、foundInstanceに格納されます
+            }
+        }
     }
 }

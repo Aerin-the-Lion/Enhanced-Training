@@ -12,3 +12,8 @@ C:\Users\admin\Documents\C#_Tool\EnhancedTraining\src\obj\Debug\EnhancedTraining
 C:\Users\admin\Documents\C#_Tool\EnhancedTraining\src\obj\Debug\EnhancedTraining.csproj.CopyComplete
 C:\Users\admin\Documents\C#_Tool\EnhancedTraining\src\obj\Debug\EnhancedTraining.dll
 C:\Users\admin\Documents\C#_Tool\EnhancedTraining\src\obj\Debug\EnhancedTraining.pdb
+C:\Users\admin\Documents\C#_Tool\MGT2mod.EnhancedTraining\src\obj\Debug\EnhancedTraining.csproj.AssemblyReference.cache
+C:\Users\admin\Documents\C#_Tool\MGT2mod.EnhancedTraining\src\obj\Debug\EnhancedTraining.csproj.CoreCompileInputs.cache
+C:\Users\admin\Documents\C#_Tool\MGT2mod.EnhancedTraining\src\obj\Debug\EnhancedTraining.csproj.CopyComplete
+C:\Users\admin\Documents\C#_Tool\MGT2mod.EnhancedTraining\src\obj\Debug\EnhancedTraining.dll
+C:\Users\admin\Documents\C#_Tool\MGT2mod.EnhancedTraining\src\obj\Debug\EnhancedTraining.pdb

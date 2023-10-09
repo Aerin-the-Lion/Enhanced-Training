@@ -17,7 +17,7 @@ namespace EnhancedTraining
 	{
 		public const string PluginGuid = "me.Aerin_the_Lion.Mad_Games_Tycoon_2.plugins.EnhancedTraining";
 		public const string PluginName = "Enhanced Training";
-		public const string PluginVersion = "1.0.0.0";
+		public const string PluginVersion = "0.0.0.1";
         // ****** Setting ******
 
         public static ConfigEntry<bool> CFG_IS_ENABLED { get; private set; }
