@@ -17,7 +17,7 @@ namespace EnhancedTraining
 	{
 		public const string PluginGuid = "me.Aerin_the_Lion.Mad_Games_Tycoon_2.plugins.EnhancedTraining";
 		public const string PluginName = "Enhanced Training";
-		public const string PluginVersion = "0.0.0.1";
+		public const string PluginVersion = "0.0.0.2";
         // ****** Setting ******
 
         public static ConfigEntry<bool> CFG_IS_ENABLED { get; private set; }
@@ -40,8 +40,10 @@ namespace EnhancedTraining
         {
             //Harmony harmony = new Harmony(PluginGuid);
             LoadConfig();
+            if (!CFG_IS_ENABLED.Value) { return; }
             Harmony.CreateAndPatchAll(typeof(CustomTrainingMod));
-		}
+            Harmony.CreateAndPatchAll(typeof(CharactorTraining));
+        }
 
         //void Update()
         //{
