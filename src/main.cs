@@ -42,7 +42,7 @@ namespace EnhancedTraining
             LoadConfig();
             if (!CFG_IS_ENABLED.Value) { return; }
             Harmony.CreateAndPatchAll(typeof(CustomTrainingMod));
-            Harmony.CreateAndPatchAll(typeof(CharactorTraining));
+            Harmony.CreateAndPatchAll(typeof(CharacterTraining));
         }
 
         //void Update()

@@ -33,6 +33,13 @@ namespace EnhancedTraining
         public static savegameScript gS_;
         public static TrainingUIObject testMenuObject;
         public static TrainingUIObject testMenuObject2;
+        public static TrainingUIObject testMenuObject3;
+        public static TrainingUIObject testMenuObject4;
+        public static TrainingUIObject testMenuObject5;
+        public static TrainingUIObject testMenuObject6;
+        public static TrainingUIObject testMenuObject7;
+
+        public static float maxLevel;
 
         /// <summary>
         /// savegameScriptのインスタンスを取得するために存在するメソッド
@@ -46,18 +53,35 @@ namespace EnhancedTraining
             originalLastMyID = mTS_.trainingCosts.Length - 1;
         }
 
+        static void FindSkillLevel()
+        {
+            characterScript characterScripts = new characterScript();
+            characterScripts.beruf = 0;
+            maxLevel = Traverse.Create(characterScripts).Method("GetSkillCap_Skill", 0).GetValue<float>();
+        }
         static void Init(savegameScript gS_)
         {
             FindScripts(gS_);
+            FindSkillLevel();
             if (mTS_.trainingCosts.Length > 24) { return; } //追加処理をすると、mTS_.trainingCosts.Lengthは24以上になるため、さらなる処理を防ぐ
             
             Debug.Log("--- Enhanced.Training.Menu_Training_Select...etc : AddedCustomUI ---");
 
             //追加するUIObjectの情報を全てここに記述する
-            testMenuObject = new TrainingUIObject("Test999", "Hogeee for Veterans", 5, 999999, 499f, 6, 1000f, 9999);
+            testMenuObject = new TrainingUIObject("Test999", "Hogeee for Veterans", 1, 999999, maxLevel, 0, 1000f, 9999);
             testMenuObject.SetUIObject();
-            testMenuObject2 = new TrainingUIObject("Test9991", "Hogeee for Veterans2", 2, 999999, 80f, 4, 1000f, testMenuObject.SiblingIndex);
+            testMenuObject2 = new TrainingUIObject("Test9992", "Hogeee for Veterans2", 2, 999999, maxLevel, 1, 1000f, testMenuObject.SiblingIndex);
             testMenuObject2.SetUIObject();
+            testMenuObject3 = new TrainingUIObject("Test9993", "Hogeee for Veterans3", 3, 999999, maxLevel, 2, 1000f, testMenuObject.SiblingIndex);
+            testMenuObject3.SetUIObject();
+            testMenuObject4 = new TrainingUIObject("Test9994", "Hogeee for Veterans4", 4, 999999, maxLevel, 3, 1000f, testMenuObject.SiblingIndex);
+            testMenuObject4.SetUIObject();
+            testMenuObject5 = new TrainingUIObject("Test9995", "Hogeee for Veterans5", 5, 999999, maxLevel, 4, 1000f, testMenuObject.SiblingIndex);
+            testMenuObject5.SetUIObject();
+            testMenuObject6 = new TrainingUIObject("Test9996", "Hogeee for Veterans6", 6, 999999, maxLevel, 5, 1000f, testMenuObject.SiblingIndex);
+            testMenuObject6.SetUIObject();
+            testMenuObject7 = new TrainingUIObject("Test9997", "Hogeee for Veterans7", 7, 999999, maxLevel, 6, 1000f, testMenuObject.SiblingIndex);
+            testMenuObject7.SetUIObject();
         }
 
         /// <summary>
@@ -114,17 +138,20 @@ namespace EnhancedTraining
                     case 2:
                         textEffect = "Effectiveness: <color=blue>High</color>";
                         break;
-                    case 3:
+                    case 4:
                         textEffect = "Effectiveness: <color=fuchsia>Very High</color>";
                         break;
-                    case 4:
+                    case 8:
                         textEffect = "Effectiveness: <color=yellow>Exceptionally High</color>";
                         break;
-                    case 5:
+                    case 16:
                         textEffect = "Effectiveness: <color=orange>Legendary☆</color>";
                         break;
-                    case 6:
+                    case 32:
                         textEffect = "Effectiveness: <color=orange>Legendary☆2</color>";
+                        break;
+                    case 64:
+                        textEffect = "Effectiveness: <color=orange>Legendary☆3</color>";
                         break;
                     default:
                         textEffect = "Effectiveness: <color=blue>Low</color>";

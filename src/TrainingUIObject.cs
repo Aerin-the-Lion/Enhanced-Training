@@ -118,7 +118,7 @@ namespace EnhancedTraining
             TextName = textName;
             Costs = costs;
             SkillCap = skillCap;
-            Efficiency = efficiency;
+            Efficiency = SetEfficiency(efficiency);
             WorkPoints = workPoints;
             SiblingIndex = siblingIndex;
             SkillIndex = skillIndex;
@@ -319,17 +319,39 @@ namespace EnhancedTraining
                     break;
             }
         }
-        /// <summary>
-        /// よくわからなくなったので放置
-        /// </summary>
-        public void FindMyIDs()
+        static int SetEfficiency(int efficiency)
         {
-            TrainingUIObject foundInstance = instanceList.FirstOrDefault(item => item.MyID == MyID);
-
-            if (foundInstance != null)
+            int result = 0;
+            switch(efficiency)
             {
-                // インスタンスが見つかった場合、foundInstanceに格納されます
+                case 0:
+                    result = efficiency;    //Low Total : 0
+                    break;
+                case 1:
+                    result = efficiency;    //Medium Total : 1
+                    break;
+                case 2:
+                    result = efficiency;    //High Total : 2
+                    break;
+                case 3:
+                    result = efficiency + 1; //Very High Total : 4
+                    break;
+                case 4:
+                    result = efficiency + 4; //Exceptionally High Total : 8
+                    break;
+                case 5:
+                    result = efficiency + 11; //Legendary☆ Total : 16
+                    break;
+                case 6:
+                    result = efficiency + 26; //Legendary☆2 Total : 32
+                break;
+                case 7:
+                    result = efficiency + 57; //Legendary☆3 Total : 64
+                    break;
+                default:
+                    break;
             }
+            return result;
         }
     }
 }

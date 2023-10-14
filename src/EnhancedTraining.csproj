@@ -68,7 +68,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CharactorTraining.cs" />
+    <Compile Include="CharacterTraining.cs" />
     <Compile Include="TrainingUIObject.cs" />
     <Compile Include="main.cs" />
     <Compile Include="CustomTrainingMod.cs" />
