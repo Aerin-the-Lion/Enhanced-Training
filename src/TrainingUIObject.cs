@@ -99,6 +99,8 @@ namespace EnhancedTraining
 
         private static bool isInit = false;
         public static List<TrainingUIObject> instanceList = new List<TrainingUIObject>();
+        public static int[] MyIDs = new int[0];
+        public static int[] SkillIndexs = new int[0];
 
         /// <summary>
         /// コンストラクタ
@@ -218,7 +220,21 @@ namespace EnhancedTraining
             clone.GetComponent<Item_Training_Kurs>().myID = GetMyID();
             ResizeArray();
             instanceList.Add(this);
+            MyIDsResizeArray();
+            MySkillIndexsResizeArray();
             return clone;
+        }
+
+        private void MyIDsResizeArray()
+        {
+            Array.Resize(ref MyIDs, MyIDs.Length + 1);
+            MyIDs[MyIDs.Length - 1] = MyID;
+        }
+
+        private void MySkillIndexsResizeArray()
+        {
+            Array.Resize(ref SkillIndexs, SkillIndexs.Length + 1);
+            SkillIndexs[SkillIndexs.Length - 1] = SkillIndex;
         }
 
         private void SetTextName(GameObject clone)

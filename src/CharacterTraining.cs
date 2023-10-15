@@ -41,10 +41,7 @@ namespace EnhancedTraining
             {
                 mTS_ = CustomTrainingMod.mTS_;
             }
-            if (taskTraining == null)
-            {
-                taskTraining = rS_.GetTaskTraining();
-            }
+            taskTraining = rS_.GetTaskTraining();
             if (GetSkillCap_Skill == 0)
             {
                 GetSkillCap_Skill = traverse.Method("GetSkillCap_Skill", new Type[] { typeof(int) }).GetValue<float>(0);
@@ -76,16 +73,16 @@ namespace EnhancedTraining
             if (__result == 0 || __result == 1) { return; }
 
             Init(__instance, rS_);
-            foreach (TrainingUIObject foundInstance in TrainingUIObject.instanceList)
+            for(int i = 0; i < TrainingUIObject.MyIDs.Length; i++)
             {
-                if (foundInstance.MyID == taskTraining.slot)
+                if (TrainingUIObject.MyIDs[i] == taskTraining.slot)
                 {
                     //Debug.Log("GetSkillCap_Skill: " + GetSkillCap_Skill);
                     //このままだと、gamedesignしかできないので、色々考える
 
                     //SkillIndexによっての職業をコメントで書いておく
                     //1=Game Design, 2=Programming, 3=Graphics Design, 4=Music & Sound, 5=Marketing & Support, 6=Game Testing, 7=Hardware & Engineering, 8=Research
-                    switch (foundInstance.SkillIndex)
+                    switch (TrainingUIObject.SkillIndexs[i])
                     {
                         case 1:
                             if (__instance.s_gamedesign < mTS_.trainingMaxLearn[taskTraining.slot] && GetSkillCap_Skill > __instance.s_gamedesign)
@@ -219,13 +216,13 @@ namespace EnhancedTraining
             int num = __instance.objectUsingS_.qualitaet - 1;
             bool flag = false;
             int num2 = 10 + num * 2 + mTS_.trainingEffekt[taskTraining.slot] * 10;
-            foreach (TrainingUIObject foundInstance in TrainingUIObject.instanceList)
+            for (int i = 0; i < TrainingUIObject.MyIDs.Length; i++)
             {
-                for (int i = 0; i < num2; i++)
+                for (int j = 0; j < num2; j++)
                 {
-                    if (foundInstance.MyID == taskTraining.slot)
+                    if (TrainingUIObject.MyIDs[i] == taskTraining.slot)
                     {
-                        if(GetSkillLevel(__instance, foundInstance.SkillIndex) < mTS_.trainingMaxLearn[taskTraining.slot])
+                        if(GetSkillLevel(__instance, TrainingUIObject.SkillIndexs[i]) < mTS_.trainingMaxLearn[taskTraining.slot])
                         {
                             //Debug.Log("Efficiency is : " + num2.ToString() + " SkillIndex is : " + foundInstance.SkillIndex.ToString() + " SkillLevel is : " + GetSkillLevel(__instance, foundInstance.SkillIndex).ToString() + " MaxLearn is : " + mTS_.trainingMaxLearn[taskTraining.slot].ToString());
                             var Learn = traverse.Method("Learn", new Type[] { typeof(bool), typeof(bool), typeof(bool), typeof(bool), typeof(bool), typeof(bool), typeof(bool), typeof(bool) })
